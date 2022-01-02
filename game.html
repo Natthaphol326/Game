@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <title>GamePlay</title>
+
+    <style>
+        .setting {
+            display: grid;
+            grid-template-columns: repeat(2, 0.2fr);
+            justify-content: center;
+            text-align: center;
+        }
+        
+        @keyframes gradient {
+            0% {
+                background-position: 0% 50%;
+            }
+            100% {
+                background-position: 100% 0%;
+            }
+        }
+        
+        .btn {
+            background: linear-gradient(80deg, #65d7fa, #d88913);
+            background-size: 50%;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: gradient 4s infinite;
+        }
+    </style>
+
+</head>
+
+<body style="font-family: Cursive; background-color: bisque;">
+
+    <audio id="audio" src="Punch1.mp3"></audio>
+    <audio id="audio2" src="Punch2.mp3"></audio>
+    <audio id="audio3" src="Pop 1.mp3"></audio>
+
+    <div class="game" id="players" style="margin-top: 100px;">
+
+        <div class="setting" style="margin-right: 0; padding-right: 0;">
+            <div class="pic1">
+                <img src="me.jpg" alt="#" id="play" v-bind:style="{height: health1 + 'px'}"><br>
+                <h2>{{health1}}</h2>
+
+                <h4>Player Damage</h4>
+                <p>Attack : {{pla}} <br>Special Attack : {{Spla}}</p>
+            </div>
+
+            <div class="pic2">
+                <img src="6.jpg" alt="#" id="monster" v-bind:style="{height: health2 + 'px'}"><br>
+                <h2>{{health2}}</h2>
+                <h4>Monster Damage</h4>
+                <p>Attack : {{mon}}</p>
+
+            </div>
+        </div>
+        <center>
+            <br><br><br>
+            <h1 v-if="health1 <= 0 && health2 > 0">Player Lose</h1>
+            <h1 v-if="health2 <= 0 && health1 > 0">Player Win</h1>
+            <h1 v-if="health1 <= 0 && health2 <= 0">Tie</h1>
+
+            <button type="button" class="btn btn-primary" @click="Start()" style="margin-top: 50px;">Start</button>
+
+            <button v-if="health1 > 0 && health2 > 0" type="button" class="btn btn-primary" @click="Attack(3,10)" style="margin-top: 50px;">Attack</button>
+
+            <button v-if="stats>=2 && health1 > 0 && health2 > 0" type="button" class="btn btn-primary" @click="SpecialAttack(10,20)" style="margin-top: 50px;">Special Attack</button>
+
+        </center>
+
+    </div>
+</body>
+
+</html>
+
+<script>
+    var hp1 = new Vue({
+        el: '#players',
+        data: {
+            health1: 100, //เลือดผู้เล่น
+            health2: 100, //เลือดมอนสเตอร์
+            stats: 0, //เกทชาร์จพลังโจมตี
+            pla: 0, //โชว์ดาเมจผู้เล่น
+            Spla: 0, //โชว์ดาเมจพิเศษผู้เล่น
+            mon: 0 //โชว์ดาเมจมอน
+        },
+        methods: {
+            Start: function() { //Reset All
+                this.health1 = 100;
+                this.health2 = 100;
+                this.stats = 0;
+                this.pla = 0;
+                this.Spla = 0;
+                this.mon = 0;
+            },
+            Attack: function(min, max) {
+                var randomNum = Math.max(Math.floor(Math.random() * max) + 1, min); //Random Damage Player
+                var randomMon = Math.max(Math.floor(Math.random() * 15) + 1, 5); //Random Damage Monster
+                this.health2 -= randomNum;
+                this.stats += 1; //เพิ่มเกท
+
+                var vm = this;
+                setTimeout(function() {
+                    vm.health1 -= randomMon;
+                    var audio = document.getElementById("audio3"); //Sound Effect
+                    audio3.play();
+                }, 500); //Delay ในการโจมตีกลับ
+
+                var audio = document.getElementById("audio"); //Sound Effect
+                audio.play();
+
+                this.pla = randomNum; //Show damage player make 
+                this.mon = randomMon; //Show damage monster make 
+
+            },
+            SpecialAttack: function(min, max) {
+                var randomNum = Math.max(Math.floor(Math.random() * max) + 1, min); //Random Damage Player
+                var randomMon = Math.max(Math.floor(Math.random() * 15) + 1, 5); //Random Damage Monster
+                this.health2 -= randomNum;
+                this.stats = 0; //เซ็ทเกท
+
+                var vm = this;
+                setTimeout(function() {
+                    vm.health1 -= randomMon;
+                    var audio = document.getElementById("audio3"); //Sound Effect
+                    audio3.play();
+                }, 500); //Delay ในการโจมตีกลับ
+
+                var punch2 = document.getElementById("audio"); //Sound Effect
+                audio2.play();
+
+                this.Spla = randomNum; //Show Special damage player make 
+                this.mon = randomMum; //Show Special damage monster make 
+            },
+
+        },
+    })
+</script>
